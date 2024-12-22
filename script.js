@@ -31,7 +31,9 @@ function getTransitionMatrix() {
 }
 
 // Function to play a note
+ ```javascript
 function playNote(frequency) {
+    console.log("Playing note with frequency:", frequency); // Debug log
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
@@ -45,6 +47,7 @@ function playNote(frequency) {
 
 // Function to simulate the Markov chain
 function simulateMarkovChain(startState, steps) {
+    console.log("Simulating Markov Chain..."); // Debug log
     const P = getTransitionMatrix(); // Get the updated transition matrix
     let currentState = startState;
     const stateSequence = [currentState];
@@ -82,6 +85,7 @@ function simulateMarkovChain(startState, steps) {
 
 // Simulate the Markov chain when the button is clicked
 document.getElementById("simulateButton").onclick = function() {
+    console.log("Simulate button clicked!"); // Debug log
     const initialState = 1; // Starting state
     const steps = 10;       // Number of steps to simulate
     const result = simulateMarkovChain(initialState, steps);
