@@ -31,9 +31,7 @@ function getTransitionMatrix() {
 }
 
 // Function to play a note
-
-function playNote(frequency) {
-    console.log("Playing note with frequency:", frequency); // Debug log
+function playNote(frequency, delay) {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
@@ -41,8 +39,8 @@ function playNote(frequency) {
     oscillator.type = 'sine'; // Type of wave
     oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
     oscillator.connect(audioContext.destination);
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + 0.5); // Play for 0.5 seconds
+    oscillator.start(audioContext.currentTime + delay); // Start after the specified delay
+    oscillator.stop(audioContext.currentTime + delay + 0.5); // Stop after 0.5 seconds
 }
 
 // Function to simulate the Markov chain
@@ -75,9 +73,11 @@ function simulateMarkovChain(startState, steps) {
     // Log the generated sequence
     console.log("Generated Sequence:", stateSequence);
 
-    // Play notes based on the generated sequence
+    // Play notes based on the generated sequence with a delay
+    let delay = 0; // Initialize delay
     stateSequence.forEach(state => {
-        playNote(noteFrequencies[state]);
+        playNote(noteFrequencies[state], delay);
+        delay += 0.5; // Increment delay for the next note
     });
 
     return stateSequence;
@@ -96,5 +96,5 @@ document.getElementById("simulateButton").onclick = function() {
 
 // Test sound button functionality
 document.getElementById("testSoundButton").onclick = function() {
-    playNote(261.63); // Play C4
+    playNote(261.63, 0); // Play C4 immediately
 };
