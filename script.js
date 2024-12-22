@@ -30,8 +30,7 @@ function simulateMarkovChain(startState, steps) {
                 currentState = states[j];
                 break;
             }
-        }// State space
-const states = [1, 2, 3, 4, 5];
+        }
 
 // Function to get the transition probability matrix from the table
 function getTransitionMatrix() {
