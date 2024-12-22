@@ -79,7 +79,7 @@ function simulateMarkovChain(startState, steps) {
         setTimeout(() => {
             playNote(noteFrequencies[state], audioContext.currentTime + delay); // Start playing at the current time + delay
         }, delay * 1000); // Convert delay to milliseconds
-        delay += 0.5; // Increment delay for the next note
+        delay += 0.1; // Increment delay for the next note
     });
 
     return stateSequence;
