@@ -10,6 +10,9 @@ const noteFrequencies = {
     5: 392.00  // G4
 };
 
+// Global audio context
+let audioContext;
+
 // Function to get the transition probability matrix from the table
 function getTransitionMatrix() {
     const matrix = [];
@@ -29,7 +32,9 @@ function getTransitionMatrix() {
 
 // Function to play a note
 function playNote(frequency) {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
     const oscillator = audioContext.createOscillator();
     oscillator.type = 'sine'; // Type of wave
     oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
@@ -64,6 +69,9 @@ function simulateMarkovChain(startState, steps) {
         stateSequence.push(currentState);
     }
 
+    // Log the generated sequence
+    console.log("Generated Sequence:", stateSequence);
+
     // Play notes based on the generated sequence
     stateSequence.forEach(state => {
         playNote(noteFrequencies[state]);
@@ -80,4 +88,9 @@ document.getElementById("simulateButton").onclick = function() {
     
     // Display the result in the output paragraph
     document.getElementById("output").innerText = "Simulated Markov Chain: " + result.join(", ");
+};
+
+// Test sound button functionality
+document.getElementById("testSoundButton").onclick = function() {
+    playNote(261.63); // Play C4
 };
