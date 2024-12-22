@@ -1,25 +1,25 @@
 function generateMarkovChain(text) {
-    const words = text.split(/\s+/);
+    const Numbers = text.split(/\s+/);
     const markovChain = {};
 
-    for (let i = 0; i < words.length - 1; i++) {
-        const word = words[i];
-        const nextWord = words[i + 1];
+    for (let i = 0; i < Numbers.length - 1; i++) {
+        const Number = Numbers[i];
+        const nextNumber = Numbers[i + 1];
 
-        if (!markovChain[word]) {
-            markovChain[word] = [];
+        if (!markovChain[Number]) {
+            markovChain[Number] = [];
         }
-        markovChain[word].push(nextWord);
+        markovChain[Number].push(nextNumber);
     }
 
-    let currentWord = words[Math.floor(Math.random() * words.length)];
-    let result = currentWord;
+    let currentNumber = Numbers[Math.floor(Math.random() * Numbers.length)];
+    let result = currentNumber;
 
-    for (let i = 0; i < 50; i++) { // Generate 50 words
-        const nextWords = markovChain[currentWord];
-        if (!nextWords) break;
-        currentWord = nextWords[Math.floor(Math.random() * nextWords.length)];
-        result += ' ' + currentWord;
+    for (let i = 0; i < 50; i++) { // Generate 50 Numbers
+        const nextNumbers = markovChain[currentNumber];
+        if (!nextNumbers) break;
+        currentNumber = nextNumbers[Math.floor(Math.random() * nextNumbers.length)];
+        result += ' ' + currentNumber;
     }
 
     return result;
