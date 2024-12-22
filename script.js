@@ -1,6 +1,15 @@
 // State space
 const states = [1, 2, 3, 4, 5];
 
+// Define frequencies for each state (note)
+const noteFrequencies = {
+    1: 261.63, // C4
+    2: 293.66, // D4
+    3: 329.63, // E4
+    4: 349.23, // F4
+    5: 392.00  // G4
+};
+
 // Function to get the transition probability matrix from the table
 function getTransitionMatrix() {
     const matrix = [];
@@ -16,6 +25,17 @@ function getTransitionMatrix() {
         matrix.push(probabilities);
     }
     return matrix;
+}
+
+// Function to play a note
+function playNote(frequency) {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    oscillator.type = 'sine'; // Type of wave
+    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+    oscillator.connect(audioContext.destination);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.5); // Play for 0.5 seconds
 }
 
 // Function to simulate the Markov chain
@@ -43,6 +63,11 @@ function simulateMarkovChain(startState, steps) {
 
         stateSequence.push(currentState);
     }
+
+    // Play notes based on the generated sequence
+    stateSequence.forEach(state => {
+        playNote(noteFrequencies[state]);
+    });
 
     return stateSequence;
 }
