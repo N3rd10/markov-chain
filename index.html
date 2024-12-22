@@ -7,7 +7,66 @@
     <title>Markov Chain Simulation</title>
 </head>
 <body>
+    <h1>Markov Chain Simulation</h1>
     <p>Hello World</p>
+
+    <h2>Transition Probability Table</h2>
+    <table id="probabilityTable" border="1">
+        <thead>
+            <tr>
+                <th>From/To</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0.75" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0.25" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><input type="number" value="0.5" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="1" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0.33" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0.33" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0.33" step="0.01" min="0" max="1"></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="1" step="0.01" min="0" max="1"></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type ="number" value="0" step="0.01" min="0" max="1"></td>
+                <td><input type="number" value="0" step="0.01" min="0" max="1"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button id="simulateButton">Simulate Markov Chain</button>
     <p id="output"></p>
     <script src="script.js"></script>
 </body>
