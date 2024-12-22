@@ -21,6 +21,6 @@ function generateMarkovChain(text) {
         currentNumber = nextNumbers[Math.floor(Math.random() * nextNumbers.length)];
         result += ' ' + currentNumber;
     }
-
+    document.getElementById("output").innerHTML = result;
     return result;
 }
