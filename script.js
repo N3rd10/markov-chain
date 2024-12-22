@@ -10,7 +10,9 @@ const noteFrequencies = {
     5: 392.00  // G4
 };
 
-noteplaywait=0
+noteammount=50;
+noteplaywait=0;
+
 
 // Global audio context
 let audioContext;
@@ -91,7 +93,7 @@ function simulateMarkovChain(startState, steps) {
 document.getElementById("simulateButton").onclick = function() {
     console.log("Simulate button clicked!"); // Debug log
     const initialState = 1; // Starting state
-    const steps = 10;       // Number of steps to simulate
+    const steps = noteammount;       // Number of steps to simulate
     const result = simulateMarkovChain(initialState, steps);
     
     // Display the result in the output paragraph
