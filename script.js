@@ -31,7 +31,7 @@ function getTransitionMatrix() {
 }
 
 // Function to play a note
- ```javascript
+
 function playNote(frequency) {
     console.log("Playing note with frequency:", frequency); // Debug log
     if (!audioContext) {
