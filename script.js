@@ -38,8 +38,12 @@ function simulateMarkovChain(startState, steps) {
     return stateSequence;
 }
 
-// Simulate the Markov chain
-const initialState = 1; // Starting state
-const steps = 10;       // Number of steps to simulate
-const result = simulateMarkovChain(initialState, steps);
-console.log("Simulated Markov Chain:", result);
+// Simulate the Markov chain when the page loads
+window.onload = function() {
+    const initialState = 1; // Starting state
+    const steps = 10;       // Number of steps to simulate
+    const result = simulateMarkovChain(initialState, steps);
+    
+    // Display the result in the output paragraph
+    document.getElementById("output").innerText = "Simulated Markov Chain: " + result.join(", ");
+};
