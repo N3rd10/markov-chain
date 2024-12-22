@@ -10,6 +10,8 @@ const noteFrequencies = {
     5: 392.00  // G4
 };
 
+noteplaywait=0
+
 // Global audio context
 let audioContext;
 
@@ -79,7 +81,7 @@ function simulateMarkovChain(startState, steps) {
         setTimeout(() => {
             playNote(noteFrequencies[state], audioContext.currentTime + delay); // Start playing at the current time + delay
         }, delay * 1000); // Convert delay to milliseconds
-        delay += 0.1; // Increment delay for the next note
+        delay += noteplaywait; // Increment delay for the next note
     });
 
     return stateSequence;
