@@ -93,7 +93,7 @@ function simulateMarkovChain(startState, steps) {
 document.getElementById("simulateButton").onclick = function() {
     console.log("Simulate button clicked!"); // Debug log
     const initialState = 1; // Starting state
-    const steps = noteammount;       // Number of steps to simulate
+    const steps = 10;       // Number of steps to simulate
     const result = simulateMarkovChain(initialState, steps);
     
     // Display the result in the output paragraph
