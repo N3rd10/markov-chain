@@ -10,9 +10,7 @@ const noteFrequencies = {
     5: 392.00  // G4
 };
 
-noteammount=10;
-noteplaywait=0;
-
+noteplaywait=0
 
 // Global audio context
 let audioContext;
