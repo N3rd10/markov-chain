@@ -10,7 +10,7 @@ const noteFrequencies = {
     5: 392.00  // G4
 };
 
-noteammount=50;
+noteammount=10;
 noteplaywait=0;
 
 
