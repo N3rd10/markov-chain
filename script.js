@@ -10,7 +10,8 @@ const noteFrequencies = {
     5: 392.00  // G4
 };
 
-noteplaywait=0
+let noteAmount = 10;
+let notePlayWait = 0;
 
 // Global audio context
 let audioContext;
@@ -48,6 +49,12 @@ function playNote(frequency, startTime) {
 // Function to simulate the Markov chain
 function simulateMarkovChain(startState, steps) {
     console.log("Simulating Markov Chain..."); // Debug log
+
+    // Initialize audio context if it hasn't been already
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
     const P = getTransitionMatrix(); // Get the updated transition matrix
     let currentState = startState;
     const stateSequence = [currentState];
@@ -79,9 +86,14 @@ function simulateMarkovChain(startState, steps) {
     let delay = 0; // Initialize delay
     stateSequence.forEach(state => {
         setTimeout(() => {
-            playNote(noteFrequencies[state], audioContext.currentTime + delay); // Start playing at the current time + delay
+            if (noteFrequencies[state]) {
+                console.log("Playing note:", noteFrequencies[state], "at delay:", delay);
+                playNote(noteFrequencies[state], audioContext.currentTime + delay); // Start playing at the current time + delay
+            } else {
+                console.error("Invalid state:", state);
+            }
         }, delay * 1000); // Convert delay to milliseconds
-        delay += noteplaywait; // Increment delay for the next note
+        delay += notePlayWait > 0 ? notePlayWait : 0.5; // Ensure a minimum delay
     });
 
     return stateSequence;
