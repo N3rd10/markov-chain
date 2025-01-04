@@ -1,10 +1,3 @@
-javascript
-
-Verify
-
-Open In Editor
-Run
-Copy code
 // Import Matter.js
 const { Engine, Render, World, Bodies, Mouse, MouseConstraint, Body } = Matter;
 
