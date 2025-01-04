@@ -1,116 +1,182 @@
-// State space
-const states = [1, 2, 3, 4, 5];
+javascript
 
-// Define frequencies for each state (note)
-const noteFrequencies = {
-    1: 261.63, // C4
-    2: 293.66, // D4
-    3: 329.63, // E4
-    4: 349.23, // F4
-    5: 392.00  // G4
-};
+Verify
 
-let noteAmount = 10;
-let notePlayWait = 0;
+Open In Editor
+Run
+Copy code
+// Import Matter.js
+const { Engine, Render, World, Bodies, Mouse, MouseConstraint, Body } = Matter;
 
-// Global audio context
-let audioContext;
+// Create an engine
+const engine = Engine.create();
+const world = engine.world;
 
-// Function to get the transition probability matrix from the table
-function getTransitionMatrix() {
-    const matrix = [];
-    const table = document.getElementById("probabilityTable");
-    const rows = table.getElementsByTagName("tr");
+// Create a renderer
+const canvas = document.getElementById('simulationCanvas');
+const render = Render.create({
+    canvas: canvas,
+    engine: engine,
+    options: {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        wireframes: false
+    }
+});
 
-    for (let i = 1; i < rows.length; i++) { // Skip header row
-        const inputs = rows[i].getElementsByTagName("input");
-        const probabilities = [];
-        for (let j = 0; j < inputs.length; j++) {
-            probabilities.push(parseFloat(inputs[j].value));
+// Add mouse control
+const mouse = Mouse.create(render.canvas);
+const mouseConstraint = MouseConstraint.create(engine, {
+    mouse: mouse,
+    constraint: {
+        stiffness: 0.2,
+        render: {
+            visible: false
         }
-        matrix.push(probabilities);
     }
-    return matrix;
+});
+World.add(world, mouseConstraint);
+
+// Add ground
+const ground = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 10, window.innerWidth, 20, { isStatic: true });
+World.add(world, ground);
+
+// Function to create a new circle
+function createCircle(x, y) {
+    const circle = Bodies.circle(x, y, 20, { render: { fillStyle: '#ffffff' } });
+    World.add(world, circle);
 }
 
-// Function to play a note
-function playNote(frequency, startTime) {
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    const oscillator = audioContext.createOscillator();
-    oscillator.type = 'sine'; // Type of wave
-    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-    oscillator.connect(audioContext.destination);
-    oscillator.start(startTime); // Start at the specified time
-    oscillator.stop(startTime + 0.5); // Stop after 0.5 seconds
+// Function to create a new rectangle
+function createRectangle(x, y) {
+    const rectangle = Bodies.rectangle(x, y, 40, 20, { render: { fillStyle: '#ffffff' } });
+    World.add(world, rectangle);
 }
 
-// Function to simulate the Markov chain
-function simulateMarkovChain(startState, steps) {
-    console.log("Simulating Markov Chain..."); // Debug log
+// Function to clear all bodies
+function clearAll() {
+    World.clear(world);
+    World.add(world, ground); // Re-add the ground
+}
 
-    // Initialize audio context if it hasn't been already
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+// Function to enable moving shapes
+let isMoving = false;
+
+function enableMove() {
+    isMoving = true;
+    canvas.style.cursor = 'move'; // Change cursor to indicate moving mode
+}
+
+function disableMove() {
+    isMoving = false;
+    canvas.style.cursor = 'default'; // Reset cursor
+}
+
+// Event listeners for menu buttons
+document.getElementById('addCircle').addEventListener('click', () => {
+    canvas.addEventListener('click', (event) => {
+        createCircle(event.clientX, event.clientY);
+    }, { once: true }); // Only add one circle per click
+});
+
+document.getElementById('addRectangle').addEventListener('click', () => {
+    canvas.addEventListener('click', (event) => {
+        createRectangle(event.clientX, event.clientY);
+    }, { once: true }); // Only add one rectangle per click
+});
+
+document.getElementById('move').addEventListener('click', () => {
+    if (isMoving) {
+        disableMove();
+    } else {
+        enableMove();
     }
+});
 
-    const P = getTransitionMatrix(); // Get the updated transition matrix
-    let currentState = startState;
-    const stateSequence = [currentState];
+document.getElementById('clear').addEventListener('click', clearAll);
 
-    for (let i = 0; i < steps; i++) {
-        const currentStateIndex = states.indexOf(currentState);
-        const probabilities = P[currentStateIndex];
+// Mouse event listeners for moving shapes
+canvas.addEventListener('mousedown', (event) => {
+    if (isMoving) {
+        const mousePosition = { x: event.clientX, y: event.clientY };
+        const bodies = Matter.Composite.allBodies(world);
+        const clickedBody = bodies.find(body => Matter.Bounds.contains(body.bounds, mousePosition));
 
-        // Generate a random number between 0 and 1
-        const randomNum = Math.random();
-        let cumulativeProbability = 0;
-
-        // Determine the next state based on the probabilities
-        for (let j = 0; j < probabilities.length; j++) {
-            cumulativeProbability += probabilities[j];
-            if (randomNum < cumulativeProbability) {
-                currentState = states[j];
-                break;
-            }
+        if (clickedBody) {
+            // Start dragging the body
+            Body.setStatic(clickedBody, false); // Make it non-static
+            Matter.Body.setPosition(clickedBody, mousePosition);
+            canvas.addEventListener('mousemove', onMouseMove);
+            canvas.addEventListener('mouseup', onMouseUp);
         }
+    }
+});
 
-        stateSequence.push(currentState);
+// Right-click event to open the properties popup
+canvas.addEventListener('contextmenu', (event) => {
+    event.preventDefault(); // Prevent the default context menu
+    const mousePosition = { x: event.clientX, y: event.clientY };
+    const bodies = Matter.Composite.allBodies(world);
+    const clickedBody = bodies.find(body => Matter.Bounds.contains(body.bounds, mousePosition));
+
+    if (clickedBody) {
+        // Show the properties popup
+        document.getElementById('propertyPopup').style.display = 'block';
+        document.getElementById('propertyPopup').style.left = `${event.clientX}px`;
+        document.getElementById('propertyPopup').style.top = `${event.clientY}px`;
+
+        // Set initial values in the popup
+        document.getElementById('color').value = clickedBody.render.fillStyle;
+        document.getElementById('size').value = clickedBody.circleRadius || 20; // Default size for circles
+    }
+});
+
+// Update properties when the user clicks the update button
+document.getElementById('updateProperties').addEventListener('click', () => {
+    const color = document.getElementById('color').value;
+    const size = parseInt(document.getElementById('size').value, 10);
+    const bodies = Matter.Composite.allBodies(world);
+    const clickedBody = bodies.find(body => body.render.fillStyle === color); // Find the body by color
+
+    if (clickedBody) {
+        // Update the body properties
+        clickedBody.render.fillStyle = color;
+        if (clickedBody.circleRadius) {
+            // If it's a circle, update the radius
+            Body.scale(clickedBody, size / clickedBody.circleRadius, size / clickedBody.circleRadius);
+        } else {
+            // If it's a rectangle, update the size
+            Body.scale(clickedBody, size / 40, size / 20); // Assuming default rectangle size is 40x20
+        }
     }
 
-    // Log the generated sequence
-    console.log("Generated Sequence:", stateSequence);
+    // Close the popup
+    document.getElementById('propertyPopup').style.display = 'none';
+});
 
-    // Play notes based on the generated sequence with a delay
-    let delay = 0; // Initialize delay
-    stateSequence.forEach(state => {
-        setTimeout(() => {
-            if (noteFrequencies[state]) {
-                console.log("Playing note:", noteFrequencies[state], "at delay:", delay);
-                playNote(noteFrequencies[state], audioContext.currentTime + delay); // Start playing at the current time + delay
-            } else {
-                console.error("Invalid state:", state);
-            }
-        }, delay * 1000); // Convert delay to milliseconds
-        delay += notePlayWait > 0 ? notePlayWait : 0.5; // Ensure a minimum delay
-    });
+// Close the popup when the close button is clicked
+document.getElementById('closePopup').addEventListener('click', () => {
+    document.getElementById('propertyPopup').style.display = 'none';
+});
 
-    return stateSequence;
+// Mouse event listeners for moving shapes
+function onMouseMove(event) {
+    if (isMoving) {
+        const mousePosition = { x: event.clientX, y: event.clientY };
+        const bodies = Matter.Composite.allBodies(world);
+        const clickedBody = bodies.find(body => Matter.Bounds.contains(body.bounds, mousePosition));
+
+        if (clickedBody) {
+            Matter.Body.setPosition(clickedBody, mousePosition);
+        }
+    }
 }
 
-// Simulate the Markov chain when the button is clicked
-document.getElementById("simulateButton").onclick = function() {
-    console.log("Simulate button clicked!"); // Debug log
-    const initialState = 1; // Starting state
-    const steps = 10;       // Number of steps to simulate
-    const result = simulateMarkovChain(initialState, steps);
-    
-    // Display the result in the output paragraph
-    document.getElementById("output").innerText = "Simulated Markov Chain: " + result.join(", ");
-};
+function onMouseUp() {
+    canvas.removeEventListener('mousemove', onMouseMove);
+    canvas.removeEventListener('mouseup', onMouseUp);
+}
 
-// Test sound button functionality
-document.getElementById("testSoundButton").onclick = function() {
-    playNote(261.63, audioContext.currentTime); // Play C4 immediately
-};
+// Run the engine and renderer
+Engine.run(engine);
+Render.run(render);
